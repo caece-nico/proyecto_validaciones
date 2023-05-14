@@ -1,0 +1,7 @@
+FROM postgres:latest
+
+ENV POSTGRES_USER nico123
+ENV POSTGRES_PASSWORD nico123
+ENV POSTGRES_DB db_test
+
+
