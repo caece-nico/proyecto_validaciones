@@ -20,7 +20,7 @@ class Database:
 
     def db_select(self, query):
         self.cur.execute(query)
-        return self.cur.fetchone()
+        return self.cur.fetchall()
 
     def db_update(self, query, parametros):
         self.cur.execute(query, parametros)
@@ -44,36 +44,3 @@ class Database:
         if self.conn is not None:
             print('Se cierra la coneccion...')
             self.conn.close()
-
-    def db_ejecuta_proc(self, procedimiento, params):
-        self.cur.execute('CALL {}(%s,%s)'.format(procedimiento), params)
-        return  self.cur.fetchone()
-
-
-
-if __name__ == '__main__':
-    db = Database('postgres')
-
-    query = '''
-    select version()
-    '''
-
-    final = db.db_select(query)
-    print(final)
-
-    query_1 = '''
-    insert into ctr_controles_movimiento(id,descripcion, estado) values (%s,%s,%s)'''
-
-    db.db_insert(query_1, (123,'Primer_control','AC'))
-
-    query_2 = '''
-    update ctr_controles_movimiento set estado = %s
-    where id = %s'''
-
-    db.db_update(query_2, ('IN', 123,))
-    
-    rta = db.db_ejecuta_proc('public.get_proc',(None, None,))
-    print(rta[0], rta[1])
-
-    db.cierra_coneccion()
-
