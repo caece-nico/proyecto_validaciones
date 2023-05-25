@@ -28,12 +28,16 @@ if __name__ == '__main__':
 #Paso dos, termina si re-ejecuta un proceso trunco o inicia uno nuevo
 
     try:
+        conn.commit()
         proceso_hoy = namedtuple('proceso', ['id', 'estado', 'ultimo_workflow_id'])
         fecha_hoy = datetime.now().strftime('%Y-%m-%d')
         dato =  ejecuta_proceso(conn, cur, fecha_hoy)
+        #devuelve -1 si es proecso nuevo.
         proceso_hoy.id = dato[0]
         proceso_hoy.estado = dato[1]
         proceso_hoy.ultimo_workflow_id = dato[2]
+
+        conn.commit()
 
         print(proceso_hoy.id)
 
@@ -56,7 +60,10 @@ if __name__ == '__main__':
 
             #Sebamos que al ser nuevo proceso no tiene workflow activo
             siguiente_workflow = avanza_workflow(estado_wkf)
-            print(siguiente_workflow)
+            #print(siguiente_workflow)
 
+            rta_avanza_wkf = inserta_wkf(id_sistema, estado_wkf, siguiente_workflow)
+
+            finaliza_proceso(id_sistema)
     except Exception as e:
         print(e)

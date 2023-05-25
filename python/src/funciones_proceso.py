@@ -3,7 +3,7 @@ from  datetime import datetime
 def ejecuta_proceso(conn, cur, fecha_proceso):
     try:
         print(fecha_proceso)
-        cur.execute("select id, estado, ultimo_workflow_id from public.ctr_proceso where fecha_inicio = %s and (estado in ('PE','ER') or estado <> 'IN'",(fecha_proceso,))
+        cur.execute("select id, estado, ultimo_workflow_id from public.ctr_proceso where fecha_inicio >= %s and ( estado <> 'IN')",(fecha_proceso,))
         id, estado, ultimo_workflow_id = cur.fetchone()
         return (id, estado, ultimo_workflow_id)
     except Exception as e:
@@ -18,10 +18,10 @@ def carga_nuevo_proceso(conn, cur):
         cur.execute('insert into public.ctr_proceso(id, fecha_inicio, fecha_fin, estado, ultimo_workflow_id) values(%s, %s, %s, %s, %s) returning id',\
             (proximo_valor,fecha_hoy, None,'PE',10))
         conn.commit()
-        id = cur.fetchall()
-        return id 
+        #id = cur.fetchall()
+        return proximo_valor 
     except Exception as e:
-        pass
+        print(e)
         
 
 
@@ -31,10 +31,6 @@ def carga_nuevo_workflow(conn, cur):
         fecha_inicio = datetime.now()
         fecha_fin = None
         estado = 'AC'
-        
-
-
-
     except Exception as e:
         pass
         

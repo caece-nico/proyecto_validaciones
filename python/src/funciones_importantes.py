@@ -58,9 +58,12 @@ def inactiva_wkf(id, estado_wkf):
     print(type(estado_wkf))
     if isinstance(estado_wkf, int):
         fecha_fin = datetime.now().strftime('%Y-%m-%d')
-        cur.execute("update public.ctr_workflow_proceso set estado = 'IN', fecha_fin = %s where id_proceso = %s and estado in ( 'ER', 'PE')",(fecha_fin,id))
-        conn.commit()
-        return 1
+        try:
+            cur.execute("update public.ctr_workflow_proceso set estado = 'IN', fecha_fin = %s where id_proceso = %s and estado in ( 'ER', 'PE')",(fecha_fin,id))
+            conn.commit()
+            return 1
+        except Exception:
+            conn.rollback()
     return 0
 
 def inserta_wkf(id, estado_wkf_anterior, estado_wkf_nuevo):
