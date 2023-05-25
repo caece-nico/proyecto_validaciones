@@ -1,9 +1,79 @@
 sql_create_db = (
     (
+        '''
+        CREATE TABLE  if not exists ctr_proceso
+        (
+            id integer,
+            fecha_inicio date,
+            fecha_fin date,
+            estado varchar(2),
+            ultimo_workflow_id integer
+        );
+        '''
+    ),
+
+    (
+        '''
+        create table  if not exists ctr_workflow_proceso
+        (
+            id integer,
+            id_proceso integer,
+            id_workflow integer,
+            estado varchar(2),
+            fecha_inicio date,
+            fecha_fin date
+        );
+        '''
+    ),
+
+    (
+        '''
+        create table  if not exists ctr_workflow_detalle
+        (
+            id integer,
+            id_workflow_proceso integer,
+            id_funcion integer,
+            fecha_inicio date,
+            fecha_fin date,
+            estado varchar(2)
+        );
+        '''
+    ),
+
+    (
+        '''
+        create table  if not exists ctr_workflow
+        (
+            id integer,
+            descripcion varchar(250),
+            estado varchar(2)
+        );
+        '''
+    ),
+    (
+        '''
+        create table  if not exists ctr_funcion_workflow
+        (
+            id integer,
+            id_workflow integer,
+            id_funcion integer,
+            estado varchar(2)
+        );'''
+    ),
+    (
+        '''create table  if not exists  ctr_funcion(
+            id integer,
+            nombre varchar(250),
+            descripcion varchar(250),
+            es_sql integer
+        );'''
+    ),
+    (
     """
     CREATE TABLE IF NOT EXISTS ctr_controles_movimiento 
     (
         id INTEGER,
+        id_workflow INTEGER,
         descripcion varchar(2500),
         estado varchar(2)
     );
@@ -93,6 +163,16 @@ sql_create_db = (
         OWNED BY public.proceso_estado_workflow.id;
         '''
 
+    ),
+
+    (
+        '''
+        create sequence if not exists seq_proceso
+        start 1
+        increment 1
+        minvalue 1
+        owned by public.ctr_proceso.id;
+        '''
     )
     
 )
